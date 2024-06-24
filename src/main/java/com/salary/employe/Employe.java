@@ -75,7 +75,7 @@ public class Employe {
 
         double totalGainExtraHour = extraHour.get(0).getExtraHour().getExtraHourSupply() * salaryPerHour() * totalExtraHour;
 
-        return category.getSalaryPerWeek().getBrut()*totalHours + totalGainExtraHour + extraGainForNight;
+        return salaryPerHour() * totalHours + totalGainExtraHour + extraGainForNight;
 
 
     }
@@ -89,12 +89,8 @@ public class Employe {
         return week.getHolidays().get(0).getExtraHour().getExtraHourSupply() * salaryPerHour() * totalHours;
         }else {
             totalHours = 0;
-
         }
         return 0;
-
-
-
     }
 
     private double forSundays (Week week){

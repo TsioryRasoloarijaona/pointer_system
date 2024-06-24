@@ -15,6 +15,6 @@ public class Category {
     private Salary salaryPerWeek ;
 
     public double brutPerHour(){
-        return salaryPerWeek.getBrut() / normalHour.getValue();
+        return salaryPerWeek.getBrut() / 7 / normalHour.getValue();
     }
 }
