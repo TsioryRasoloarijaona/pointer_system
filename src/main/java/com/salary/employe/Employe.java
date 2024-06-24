@@ -1,7 +1,7 @@
 package com.salary.employe;
 
 import com.salary.calendar.day.NormalDay;
-import com.salary.calendar.month.Month;
+import com.salary.calendar.month.Week;
 import com.salary.categories.Category;
 import com.salary.categories.CategoryName;
 import com.salary.salary.Salary;
@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Calendar;
 import java.util.List;
 
 @Getter
@@ -36,15 +35,15 @@ public class Employe {
         return category.getSalaryPerWeek();
     }
 
-    private Salary salaryForOthers(Month month){
-        return forMonth(month);
+    private Salary salaryForOthers(Week week){
+        return perWeek(week);
     }
 
-    public Salary salaryDetails (Month month){
+    public Salary salaryDetails (Week week){
         if (category.getCategoryName().equals(CategoryName.superior)){
             return salaryForSuperior();
         }
-        return salaryForOthers(month);
+        return salaryForOthers(week);
     }
 
 
@@ -52,12 +51,12 @@ public class Employe {
         return category.brutPerHour();
     }
 
-    private double forNormalDay (Month month){
-        int totalHours = month.getNormalDays()
+    private double forNormalDay (Week week){
+        int totalHours = week.getNormalDays()
                 .stream().mapToInt(d -> d.getNormalHour().getValue())
                 .sum();
 
-        List<NormalDay> withNight = month.getNormalDays()
+        List<NormalDay> withNight = week.getNormalDays()
                 .stream().filter(d -> !d.getNightHour().equals(null))
                 .toList();
 
@@ -67,7 +66,7 @@ public class Employe {
 
         double extraGainForNight = withNight.get(0).getNightHour().getExtraSupply() * salaryPerHour() * totalNightHour;
 
-        List<NormalDay> extraHour = month.getNormalDays()
+        List<NormalDay> extraHour = week.getNormalDays()
                 .stream().filter(d-> !d.getExtraHour().equals(null))
                 .toList();
 
@@ -76,30 +75,38 @@ public class Employe {
 
         double totalGainExtraHour = extraHour.get(0).getExtraHour().getExtraHourSupply() * salaryPerHour() * totalExtraHour;
 
-        return category.getSalaryPerWeek().getBrut() + totalGainExtraHour + extraGainForNight;
+        return category.getSalaryPerWeek().getBrut()*totalHours + totalGainExtraHour + extraGainForNight;
 
 
     }
 
-    private double forHolidaysHours (Month month){
-        int totalHours = month.getHolidays()
+    private double forHolidaysHours (Week week){
+        int totalHours = 0 ;
+        if (week.getHolidays() != null){
+
+         totalHours = week.getHolidays()
+                .stream().mapToInt(d->d.getExtraHour().getValue()).sum();
+        return week.getHolidays().get(0).getExtraHour().getExtraHourSupply() * salaryPerHour() * totalHours;
+        }else {
+            totalHours = 0;
+
+        }
+        return 0;
+
+
+
+    }
+
+    private double forSundays (Week week){
+        int totalHours = week.getSundays()
                 .stream().mapToInt(d->d.getExtraHour().getValue()).sum();
 
-        return   month.getHolidays().get(0).getExtraHour().getExtraHourSupply() * salaryPerHour() * totalHours;
+        return week.getSundays().get(0).getExtraHour().getExtraHourSupply() * salaryPerHour() * totalHours;
 
 
     }
 
-    private double forSundays (Month month){
-        int totalHours = month.getSundays()
-                .stream().mapToInt(d->d.getExtraHour().getValue()).sum();
-
-        return month.getSundays().get(0).getExtraHour().getExtraHourSupply() * salaryPerHour() * totalHours;
-
-
-    }
-
-    private Salary forMonth (Month month){
-        return new Salary(forSundays(month) + forHolidaysHours(month) + forNormalDay(month));
+    private Salary perWeek(Week week){
+        return new Salary(forSundays(week) + forHolidaysHours(week) + forNormalDay(week));
     }
 }

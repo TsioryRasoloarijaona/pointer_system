@@ -1,4 +1,4 @@
-package com.salary.calendar.month;
+package com.salary.calendar.week;
 
 import com.salary.calendar.day.Holiday;
 import com.salary.calendar.day.NormalDay;
@@ -6,17 +6,17 @@ import com.salary.calendar.day.Sunday;
 import lombok.*;
 
 import java.util.List;
-@Setter
+@AllArgsConstructor
 @Getter
+@Setter
 @ToString
 @EqualsAndHashCode
-@AllArgsConstructor
-public class Month {
+public class Week {
     private List<NormalDay> normalDays;
     private List<Sunday> sundays;
     private List<Holiday> holidays;
 
-    public Month(List<NormalDay> normalDays, List<Sunday> sundays) {
+    public Week(List<NormalDay> normalDays, List<Sunday> sundays) {
         this.normalDays = normalDays;
         this.sundays = sundays;
     }

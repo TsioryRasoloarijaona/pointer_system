@@ -20,9 +20,10 @@ public final class NormalDay extends Day {
         this.normalHour = normalHour;
     }
 
-    public NormalDay(Date date, NightHour nightHour, NormalHour normalHour) {
+    public NormalDay(Date date, NightHour nightHour, NormalHour normalHour , ExtraHour extraHour) {
         super(date, nightHour);
         this.normalHour = normalHour;
+        this.extraHour = extraHour;
     }
 
     public NormalDay(Date date, NightHour nightHour) {
